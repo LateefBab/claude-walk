@@ -506,8 +506,8 @@ const server = Bun.serve<SocketData>({
       return Response.json({})
     }
 
-    // Stop hook. Turn boundary: if Claude worked a whole turn without saying
-    // anything, tell the phone so it can give a short cue rather than silence.
+    // Stop hook. Turn boundary: the phone stops showing Claude as working, and
+    // learns whether the turn ended without anything being said.
     if (url.pathname === '/hook/stop' && req.method === 'POST') {
       if (!spokeThisTurn) broadcast({ type: 'silent_turn' })
       broadcast(statusFrame())

@@ -126,13 +126,13 @@ features"). Whatever you answered became a rule for `bun.exe` that applies to ev
 List them, and the profile each network uses:
 
 ```powershell
-Get-NetFirewallApplicationFilter | Where-Object Program -match 'bun' | Get-NetFirewallRule |
+Get-NetFirewallApplicationFilter | Where-Object Program -match '\\bun\.exe$' | Get-NetFirewallRule |
   Format-Table DisplayName, Action, Direction, Profile, Enabled
 Get-NetConnectionProfile | Format-Table InterfaceAlias, NetworkCategory
 ```
 
-If any appear and you do not need Bun programs reachable from other machines, remove them
-(elevated): `Get-NetFirewallApplicationFilter | Where-Object Program -match 'bun' | Get-NetFirewallRule | Remove-NetFirewallRule`.
+Review the list. If you do not need Bun programs reachable from other machines, remove
+them (elevated): `Get-NetFirewallApplicationFilter | Where-Object Program -match '\\bun\.exe$' | Get-NetFirewallRule | Remove-NetFirewallRule`.
 If Windows asks again later, any answer creates a new program rule, so run the check again
 afterwards. The Tailscale rule below is what should let the phone in.
 
