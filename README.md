@@ -38,7 +38,7 @@ session, with the terminal swapped for your ears.
 3. When Claude calls `speak`, the phone reads it aloud. When you talk, the phone transcribes
    you and the bridge pushes the text into the session as a channel event.
 4. Two [hooks](https://code.claude.com/docs/en/hooks) mirror Claude's written replies to the
-   phone screen, and tell the phone when a turn ended without anything being said.
+   phone screen, and tell the phone when Claude's turn has ended.
 
 Voice starts **off**. Every session can carry the channel without talking. Tap
 **Start walking** in the app when you get up, and **Back at the desk** when you return.
@@ -137,13 +137,16 @@ destructive it may have misheard.
 ## Privacy and security
 
 - Your voice is transcribed by the phone's speech recognition service. On most phones that
-  is Google's, which may process audio on its servers. Speech output is synthesized on the
-  phone.
+  is Google's, which may process audio on its servers. Speech output uses the phone's
+  text-to-speech engine: offline voices stay on the phone, while voices marked as needing
+  network are synthesized by the engine's provider.
 - The bridge talks only to your phone, over your tailnet. It makes no other network calls.
 - The phone must present a shared token to connect. Hook endpoints accept only local
   callers. Traffic is plain WebSocket, carried inside Tailscale's encrypted WireGuard tunnel.
-- The setup guide scopes the firewall rule to the Tailscale interface, so the ports stay
-  closed on Wi-Fi and public networks.
+- On Windows and on Linux with ufw, the setup guide opens the ports on the Tailscale
+  interface only, so other devices on your Wi-Fi cannot reach them. The bridge itself listens
+  on all interfaces, so on a machine without such a rule (macOS by default) the ports are
+  reachable from your local network, still behind the token.
 
 See [SECURITY.md](SECURITY.md) for the threat model and how to report a problem.
 

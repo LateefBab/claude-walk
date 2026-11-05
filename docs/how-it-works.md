@@ -37,7 +37,7 @@ The same process serves:
 | `GET /ws` | the phone | WebSocket. The first frame must be `hello` with the token, or the socket is closed with 4001. |
 | `GET /health` | the phone's session scan, you | Liveness. Project, session and phone counts only with `?token=`. |
 | `POST /hook/display` | Claude Code (`MessageDisplay` hook) | Mirrors Claude's written output to the phone screen. Returns `{}` immediately, because Claude Code holds the terminal display until it answers. |
-| `POST /hook/stop` | Claude Code (`Stop` hook) | Marks the turn boundary. If Claude said nothing that turn, the phone plays a short cue so silence is not mistaken for a dead link. |
+| `POST /hook/stop` | Claude Code (`Stop` hook) | Marks the turn boundary, so the phone stops showing Claude as working. |
 
 Hook endpoints accept only loopback callers.
 
@@ -47,7 +47,7 @@ diagnostic goes to stderr.
 ### Voice on and off
 
 Voice starts off, so any number of sessions can carry the channel without talking. The phone
-sends `voice: true` when you tap **Start walking**. The bridge tells Claude through a channel
+sends a `voice` frame with `active: true` when you tap **Start walking**. The bridge tells Claude through a channel
 message, and Claude starts using `speak`. **Back at the desk** reverses it. While voice is
 off, `speak` returns "not spoken" and nothing is queued, because a backlog built up while you
 sat at the desk would be stale by the time you stood up.
@@ -55,8 +55,8 @@ sat at the desk would be stale by the time you stood up.
 ### Delivery
 
 Each spoken item gets an id and stays in an unacked queue until the phone confirms it
-finished playing. On reconnect, everything unacked is replayed. A signal dropout therefore
-loses nothing and never repeats anything. Ids are scoped to the bridge process, so an ack
+finished playing. On reconnect, everything unacked is replayed, so a signal dropout does not
+lose an update. Delivery is best effort: if an ack itself is lost, the item can play twice. Ids are scoped to the bridge process, so an ack
 from an earlier session cannot clear a message in this one.
 
 The bridge also keeps the last 40 transcript lines so a reconnecting phone can fill its
@@ -75,15 +75,16 @@ between them in the app.
 A foreground service owns the WebSocket, text-to-speech, the speech recognizer and a media
 session, so everything keeps working with the screen off and the phone in a pocket.
 
-- **Speech out:** Android `TextToSpeech`, on the phone. Long messages are split to fit the
-  engine's limit.
+- **Speech out:** Android `TextToSpeech`, with a voice you pick in the app (offline voices run
+  on the phone). Long messages are split to fit the engine's limit.
 - **Speech in:** Android `SpeechRecognizer`. Press to talk, or hands-free (which starts muted).
   A turn can span pauses; each sentence is kept separately so one can be undone.
 - **Earbud button:** Android only routes media buttons to an app that is actually playing
   audio, and speech output does not count. The app therefore plays a silent looping track to
   hold the button.
-- **Tailnet monitor:** distinguishes "Tailscale is off on the phone" from "no session is
-  running", so you hear the right explanation.
+- **Tailnet monitor:** watches whether the phone has a VPN up, to tell "Tailscale is off"
+  apart from "no session is running". It checks for any VPN, so a different VPN app can
+  hide a disconnected tailnet.
 
 ## Known constraints
 

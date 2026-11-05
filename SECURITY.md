@@ -19,10 +19,10 @@ network.
 
 | Layer | Protection |
 |---|---|
-| Network reach | The bridge listens on ports 8710-8719. The setup guide opens them in the firewall only on the Tailscale interface, so devices on your Wi-Fi or a public network cannot reach them. |
+| Network reach | The bridge listens on ports 8710-8719 on all interfaces. On Windows and on Linux with ufw, the setup guide opens them in the firewall only on the Tailscale interface, so devices on your Wi-Fi or a public network cannot reach them. On a machine without such a rule (macOS by default), they are reachable from the local network and only the token protects them. |
 | Transport | Plain WebSocket (`ws://`) inside Tailscale's WireGuard tunnel, which encrypts it end to end. The app allows cleartext for this reason, because the host is chosen by you at runtime. |
 | Phone authentication | A shared token in `bridge/.env`. A socket that does not present it first is closed. `/health` returns detail only with the token. |
-| Hooks | `/hook/display` and `/hook/stop` accept loopback callers only, so nothing on the network can inject text into your transcript. |
+| Hooks | `/hook/display` and `/hook/stop` accept loopback callers only, and refuse browser-shaped requests (an `Origin` header or a non-JSON body), so neither the network nor a web page you have open can inject text into your transcript. |
 | Secrets in the repo | `bridge/.env` and `android/local.properties` are git-ignored. No keys are needed: speech runs on the phone's built-in services. |
 
 ## Things to know

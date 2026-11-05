@@ -111,8 +111,30 @@ as shown in the first column of `tailscale status`.
 ## 5. Open the ports, on the Tailscale interface only
 
 Each voice-enabled session claims one port between 8710 and 8719. The phone connects to them
-inbound. The rule below opens them only on the Tailscale adapter, so they stay closed on
-Wi-Fi and public networks.
+inbound. The bridge listens on all interfaces, so the firewall decides who can reach it. The
+rule below opens the ports only on the Tailscale adapter, so they stay closed on Wi-Fi and
+public networks.
+
+**Check for a program rule for `bun`.** The first time any Bun program listens on a port,
+Windows may ask whether to allow it ("Windows Defender Firewall has blocked some
+features"). Whatever you answered became a rule for `bun.exe` that applies to every port:
+
+- An **Allow** rule covering the Public profile makes the bridge reachable from any Wi-Fi
+  you join, whatever the rule below says.
+- A **Block** rule on the profile your Tailscale adapter uses stops the phone connecting.
+
+List them, and the profile each network uses:
+
+```powershell
+Get-NetFirewallApplicationFilter | Where-Object Program -match 'bun' | Get-NetFirewallRule |
+  Format-Table DisplayName, Action, Direction, Profile, Enabled
+Get-NetConnectionProfile | Format-Table InterfaceAlias, NetworkCategory
+```
+
+If any appear and you do not need Bun programs reachable from other machines, remove them
+(elevated): `Get-NetFirewallApplicationFilter | Where-Object Program -match 'bun' | Get-NetFirewallRule | Remove-NetFirewallRule`.
+If Windows asks again later, any answer creates a new program rule, so run the check again
+afterwards. The Tailscale rule below is what should let the phone in.
 
 **[you]** Windows, in an **elevated** PowerShell (Run as administrator):
 
@@ -125,8 +147,9 @@ New-NetFirewallRule -DisplayName "Claude Walk bridge (Tailscale only)" `
 To remove it later: `Remove-NetFirewallRule -DisplayName "Claude Walk bridge (Tailscale only)"`.
 
 - **Linux with ufw:** `sudo ufw allow in on tailscale0 to any port 8710:8719 proto tcp`
-- **macOS:** the built-in firewall is off by default. If you have turned it on, allow
-  incoming connections for `bun` when macOS asks.
+- **macOS:** the built-in firewall is off by default, so the ports are reachable from your
+  local network, protected only by the token. The application firewall cannot scope by
+  interface; use it (or a tool like `pf`) if that matters to you, and allow `bun` when asked.
 
 **Check:** `Get-NetFirewallRule -DisplayName "Claude Walk bridge (Tailscale only)"` shows the
 rule as enabled. The end-to-end test happens in step 9.
@@ -292,7 +315,7 @@ your clone:
 ```
 
 **Optional, the screen mirror:** speech works without this. To also mirror Claude's written
-replies to the phone screen and get the "turn ended silently" cue, copy the `hooks` block from
+replies to the phone screen and have it show when Claude's turn ends, copy the `hooks` block from
 this repo's `.claude/settings.json` into the other project's `.claude/settings.json`, changing
 `8710` to that project's port in both URLs. The hooks only work when the port is pinned, as
 above.
