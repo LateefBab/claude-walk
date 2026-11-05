@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A microphone, centred in the adaptive-icon safe zone. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,36c-3.3,0 -6,2.7 -6,6v14c0,3.3 2.7,6 6,6s6,-2.7 6,-6V42C60,38.7 57.3,36 54,36z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M66,54c0,6.6 -5.4,12 -12,12s-12,-5.4 -12,-12h-4c0,8.1 6,14.8 14,15.9V76h4v-6.1c8,-1.1 14,-7.8 14,-15.9H66z" />
+</vector>

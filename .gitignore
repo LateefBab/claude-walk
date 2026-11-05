@@ -1,0 +1,28 @@
+# Secrets
+.env
+bridge/.env
+
+# Claude Code's per-machine settings (absolute paths, permission rules)
+.claude/settings.local.json
+
+# Dependencies
+node_modules/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+.idea/
+.kotlin/
+*.iml
+*.hprof
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# OS and logs
+.DS_Store
+Thumbs.db
+*.log

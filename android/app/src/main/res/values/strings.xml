@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Claude Walk</string>
+
+    <string name="notification_channel_name">Walking session</string>
+    <string name="notification_channel_description">Keeps the connection to Claude Code alive while the screen is off.</string>
+
+    <string name="status_connected">Connected</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_speaking">Claude is speaking</string>
+    <string name="status_listening">Listening</string>
+    <string name="status_sending">Sending</string>
+
+    <string name="action_listen">Talk</string>
+    <string name="action_stop_audio">Stop audio</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_resume_count">Resume (%1$d)</string>
+    <string name="status_paused">Paused</string>
+
+    <string name="voice_preview">This is how I will sound on your walk. Adjust the speed until it is comfortable to follow.</string>
+</resources>

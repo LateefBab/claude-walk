@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "claude-walk": {
+      "command": "bun",
+      "args": ["bridge/server.ts"],
+      "env": {
+        "CLAUDE_WALK_PORT": "8710"
+      }
+    }
+  }
+}

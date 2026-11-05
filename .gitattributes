@@ -1,0 +1,15 @@
+# LF everywhere, on every machine, regardless of core.autocrlf. The bridge's .env
+# parser accepts CRLF, but shell scripts like gradlew do not run with it.
+* text=auto eol=lf
+gradlew text eol=lf
+
+# Windows-only launchers want CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary: never converted, never diffed as text.
+*.jar binary
+*.ogg binary
+*.png binary
+*.apk binary
+*.keystore binary

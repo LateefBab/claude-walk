@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Apps targeting API 28+ have cleartext traffic blocked by default, with an
+  exemption for localhost. That is why this app worked over USB against
+  127.0.0.1 and failed silently the moment the host became a Tailscale address:
+  the platform refused the socket before it ever left the phone, so nothing
+  reached the laptop and there was no network error to see.
+
+  The bridge speaks ws:// rather than wss://, and adding TLS to it would mean
+  certificate management for a personal tool that only ever talks to one machine.
+  Tailscale already carries this traffic inside a WireGuard tunnel, so the link
+  is encrypted end to end regardless of the scheme; the cleartext here is
+  cleartext-inside-a-VPN, not cleartext on the open network.
+
+  The host is entered by the user at runtime, and network security config
+  matches literal domains rather than CIDR ranges, so the tailnet range
+  (100.64.0.0/10) cannot be expressed as an allowlist here.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

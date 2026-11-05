@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose supplies the real theme; this only needs to exist before the
+         first frame so the launch window does not flash a default background. -->
+    <style name="Theme.ClaudeWalk" parent="android:Theme.Material.NoActionBar" />
+</resources>
